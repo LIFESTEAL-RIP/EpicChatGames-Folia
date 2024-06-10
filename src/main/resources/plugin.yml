@@ -1,0 +1,10 @@
+name: EpicChatGames
+version: '${version}'
+main: gg.minecrush.reactions.Reactions
+api-version: '1.20'
+author: awel
+description: Reactions plugin with everything you need in it
+
+commands:
+  chatgames:
+    description: Main command for Reactions plugin

@@ -1,0 +1,12 @@
+options:
+  mathMin: 30
+  mathMax: 250
+  reward: "$150,000"
+  reward-command: "eco give %player% 150000"
+
+  automatic:
+    automaticReactionsInterval: 3
+    automaticReactionsEnabled: true
+
+
+
