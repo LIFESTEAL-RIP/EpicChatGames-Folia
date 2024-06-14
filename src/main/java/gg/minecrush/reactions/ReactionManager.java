@@ -5,6 +5,7 @@ import gg.minecrush.reactions.storage.yaml.Words;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import gg.minecrush.reactions.util.color;
 
@@ -59,7 +60,8 @@ public class ReactionManager {
 
     public void handleCorrectAnswer(Player player, String message) {
         long timeTaken = System.currentTimeMillis() - reactionStartTime;
-        Bukkit.getScheduler().runTask(plugin, () -> {
+
+        Bukkit.getServer().getGlobalRegionScheduler().run(plugin, task -> {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), plugin.getConfig().getString("options.reward-command").replace("%player%", player.getName()));
         });
         String timeFormatted = String.format("%.2f", timeTaken / 1000.0);
@@ -87,7 +89,10 @@ public class ReactionManager {
         }
 
         reactionStartTime = System.currentTimeMillis();
-        Bukkit.getScheduler().runTaskLater(plugin, this::checkreaction, 600L);     }
+        Reactions.getInstance().foliaLib.getImpl().runLater(() -> {
+            checkreaction();
+        }, 600L);
+    }
 
     private void checkreaction() {
         if (reactionActive != false) {

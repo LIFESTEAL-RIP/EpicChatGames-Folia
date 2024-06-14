@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id('com.github.johnrengelman.shadow') version '8.1.1'
 }
 
 group = 'gg.minecrush'
@@ -15,10 +16,15 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "devmart-other"
+        url = "https://nexuslite.gcnt.net/repos/other/"
+    }
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT"
+    implementation "com.tcoded:FoliaLib:0.3.1"
 }
 
 def targetJavaVersion = 17
@@ -37,6 +43,13 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release.set(targetJavaVersion)
     }
+}
+
+shadowJar {
+    archiveBaseName.set('EpicChatGames')
+    archiveClassifier.set('')
+
+    relocate 'com.tcoded.folialib', 'gg.minecrush.reactions.folialib'
 }
 
 processResources {

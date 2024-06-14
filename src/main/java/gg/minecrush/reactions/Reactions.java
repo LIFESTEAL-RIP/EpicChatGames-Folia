@@ -1,5 +1,6 @@
 package gg.minecrush.reactions;
 
+import com.tcoded.folialib.FoliaLib;
 import gg.minecrush.reactions.async.AutomaticEvents;
 import gg.minecrush.reactions.command.ReactionCommand;
 import gg.minecrush.reactions.command.ReactionTabComplete;
@@ -7,10 +8,8 @@ import gg.minecrush.reactions.storage.yaml.Messages;
 import gg.minecrush.reactions.storage.yaml.Words;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.Random;
 import java.util.logging.Logger;
 
 public class Reactions extends JavaPlugin {
@@ -21,6 +20,12 @@ public class Reactions extends JavaPlugin {
     private Messages messages;
     private Words words;
     private AutomaticEvents automaticEvents;
+    public FoliaLib foliaLib;
+    private static Reactions instance;
+
+    public static Reactions getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
@@ -47,8 +52,10 @@ public class Reactions extends JavaPlugin {
                 Bukkit.getPluginManager().disablePlugin(this);
             }
 
+            this.foliaLib = new FoliaLib(this);
             this.messages = new Messages(this);
             this.words = new Words(this);
+            instance = this;
 
 
             this.saveDefaultConfig();

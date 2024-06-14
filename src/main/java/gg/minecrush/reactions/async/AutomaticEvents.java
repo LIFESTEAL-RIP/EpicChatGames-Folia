@@ -1,9 +1,9 @@
 package gg.minecrush.reactions.async;
 
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import gg.minecrush.reactions.ReactionManager;
+import gg.minecrush.reactions.Reactions;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class AutomaticEvents {
     private final JavaPlugin plugin;
 
     private int automaticReactionsInterval;
-    private BukkitTask currentTask;
+    private WrappedTask currentTask;
 
     private static final String[] REACTION_TYPES = {"math", "scramble", "fastest"};
 
@@ -31,22 +31,18 @@ public class AutomaticEvents {
     public synchronized void scheduleAutomaticReactions() {
         cancelCurrentTask();
         plugin.getLogger().info("Scheduling new automatic reaction task.");
-        currentTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!reactionManager.isReactionActive()) {
-                    Random random = new Random();
-                    String type = REACTION_TYPES[random.nextInt(REACTION_TYPES.length)];
-                    reactionManager.startReaction(type);
-                }
-            }
-        }.runTaskTimerAsynchronously(plugin, 60 * 20, 20 * 60 * automaticReactionsInterval);
+        currentTask = Reactions.getInstance().foliaLib.getImpl().runTimerAsync(() -> {
+                    if (!reactionManager.isReactionActive()) {
+                        Random random = new Random();
+                        String type = REACTION_TYPES[random.nextInt(REACTION_TYPES.length)];
+                        reactionManager.startReaction(type);
+                    }
+        }, 60 * 20, 20L * 60 * automaticReactionsInterval);
     }
 
     public synchronized void cancelCurrentTask() {
         if (currentTask != null && !currentTask.isCancelled()) {
             plugin.getLogger().info("Cancelling current automatic reaction task.");
-
             currentTask.cancel();
         }
     }
